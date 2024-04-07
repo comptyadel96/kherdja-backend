@@ -40,6 +40,7 @@ const postSchema = new mongoose.Schema({
   },
   titre: String,
   paragraphe: String,
+  organisateur: String,
 })
 
 // Schema indexes

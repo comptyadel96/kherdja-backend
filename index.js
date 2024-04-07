@@ -5,7 +5,7 @@ const cors = require("cors")
 const posts = require("./routes/posts")
 const connectdb = require("./utils/connectdb")
 
-env.config()
+env.config({ path: "./config/.env" })
 
 connectdb()
 

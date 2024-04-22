@@ -11,6 +11,7 @@ exports.getposts = tryCatchHandler(async (req, res, next) => {
   const startIndex = (page - 1) * limit
 
   let postsNumber = await postModal.countDocuments()
+  
   const posts = await sweatModel
     .find()
     .skip(startIndex)
@@ -31,6 +32,7 @@ exports.getposts = tryCatchHandler(async (req, res, next) => {
       posts,
     })
   }
+
   if (!posts) {
     return res
       .status(404)

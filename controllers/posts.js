@@ -9,11 +9,19 @@ exports.getposts = tryCatchHandler(async (req, res, next) => {
   const page = parseInt(req.query.page) || 1
   const limit = parseInt(req.query.limit) || 10
   const startIndex = (page - 1) * limit
+  const type = req.query.type || null
+
+  // let query = {}
+
+  // if (type) {
+  //   query.type = type
+  // }
 
   let postsNumber = await postModal.countDocuments()
-  
-  const posts = await sweatModel
-    .find()
+
+  const posts = await postModal
+    .find({ type: req.query.type })
+
     .skip(startIndex)
     .limit(limit)
     .sort({ [sortedBy]: order })
@@ -32,6 +40,7 @@ exports.getposts = tryCatchHandler(async (req, res, next) => {
       posts,
     })
   }
+  
 
   if (!posts) {
     return res
@@ -54,6 +63,7 @@ exports.getPost = tryCatchHandler(async (req, res, next) => {
 })
 
 // create a new post
+
 exports.createPost = tryCatchHandler(async (req, res, next) => {
   // Vérifier si une image a été téléchargée
   if (!req.file) {
@@ -61,8 +71,16 @@ exports.createPost = tryCatchHandler(async (req, res, next) => {
   }
 
   // Si une image est téléchargée, créer le post avec les données fournies
-  const { titre, dateDebut, paragraphe, heureDebut, type, lieu, prix ,photo} =
-    req.body
+  const {
+    titre,
+    dateDebut,
+    paragraphe,
+    heureDebut,
+    type,
+    lieu,
+    prix,
+    organisateur,
+  } = req.body
   const post = await postModal.create({
     titre,
     dateDebut,
@@ -72,11 +90,11 @@ exports.createPost = tryCatchHandler(async (req, res, next) => {
     lieu,
     prix,
     photo: req.file.path, // Chemin de l'image téléchargée
+    organisateur,
   })
 
   return res.status(200).json({ message: "Post créé avec succès", post })
 })
-
 
 // edit post
 exports.editPost = tryCatchHandler(async (req, res, next) => {

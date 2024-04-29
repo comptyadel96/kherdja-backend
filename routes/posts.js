@@ -1,6 +1,7 @@
 const router = require("express").Router()
 const multer = require("multer")
 const path = require("path")
+const fs = require("fs")
 const {
   getposts,
   getPost,
@@ -8,6 +9,7 @@ const {
   editPost,
   deletePost,
 } = require("../controllers/posts")
+const sharp = require("sharp")
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -17,6 +19,7 @@ const storage = multer.diskStorage({
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9)
     const ext = path.extname(file.originalname)
     console.log("Extension du fichier:", ext)
+
     cb(null, uniqueSuffix + ext)
   },
 })
@@ -37,8 +40,32 @@ const upload = multer({
   storage: storage,
 }).single("photo")
 
-router.route("/").get(getposts).post(upload, createPost)
+// Middleware pour redimensionner l'image avec Sharp
+const resizeImage = async (req, res, next) => {
+  if (!req.file) {
+    return next() // Si pas de fichier, passez au middleware suivant
+  }
+  try {
+    const { path: imagePath } = req.file
+    const resizedImagePath = imagePath.replace(/\.(jpg|jpeg|png)$/gi, ".webp")
+    await sharp(imagePath)
+      .resize({ fit: "inside", width: 450, height: 400 })
+      .toFormat("webp")
+      .toFile(resizedImagePath)
+    fs.unlinkSync(imagePath)
+    req.file.path = resizedImagePath // Mettez à jour le chemin du fichier avec le chemin redimensionné
+    next()
+  } catch (error) {
+    return next(error) // En cas d'erreur, passez à l'erreur suivante
+  }
+}
 
-router.route("/:id").get(getPost).put(upload, editPost).delete(deletePost)
+router.route("/").get(getposts).post(upload, resizeImage, createPost)
+
+router
+  .route("/:id")
+  .get(getPost)
+  .put(upload, resizeImage, editPost)
+  .delete(deletePost)
 
 module.exports = router

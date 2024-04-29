@@ -20,8 +20,9 @@ const postSchema = new mongoose.Schema({
       "Spectacle et humour",
       "Théâtre",
       "Musées et expositions",
-      "Ou manger ?",
+      "Ou manger",
       "Restaurant",
+
       "Street Food",
       "Brunch et Café",
       "Pâtisseries et gâteaux",

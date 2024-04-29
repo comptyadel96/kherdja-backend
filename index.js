@@ -7,6 +7,7 @@ const connectdb = require("./utils/connectdb")
 
 env.config({ path: "./config/.env" })
 
+
 connectdb()
 
 app.use(
@@ -40,8 +41,8 @@ app.use(function (req, res, next) {
 // serve static images
 app.use(express.static(__dirname + "/public"))
 app.use(express.json({ limit: "15mb" }))
-// mount the routes
 
+// mount the routes
 app.use("/api/posts", posts)
 
 const PORT = process.env.PORT || 3000

@@ -22,7 +22,6 @@ const postSchema = new mongoose.Schema({
       "Musées et expositions",
       "Ou manger",
       "Restaurant",
-
       "Street Food",
       "Brunch et Café",
       "Pâtisseries et gâteaux",

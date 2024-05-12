@@ -3,13 +3,12 @@ const app = express()
 const env = require("dotenv")
 const cors = require("cors")
 const posts = require("./routes/posts")
-const users=require('./routes/users')
+const users = require("./routes/users")
 const connectdb = require("./utils/connectdb")
 const session = require("express-session")
 const passport = require("passport")
 
 env.config({ path: "./config/.env" })
-
 
 connectdb()
 
@@ -18,6 +17,7 @@ app.use(
     secret: process.env.COOKIE_KEY,
     resave: false,
     saveUninitialized: false,
+
     // proxy: true,
     cookie: {
       secure: false, // remmetre ça en true en production
@@ -73,9 +73,9 @@ app.use("/api/isAuthenticated", async (req, res) => {
   }
 })
 
-// mount the routes 
+// mount the routes
 app.use("/api/posts", posts)
-app.use("/api/users",users)
+app.use("/api/users", users)
 
 const PORT = process.env.PORT || 3000
 

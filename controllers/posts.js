@@ -11,21 +11,20 @@ exports.getposts = tryCatchHandler(async (req, res, next) => {
   const startIndex = (page - 1) * limit
   const type = req.query.type || null
 
-  // let query = {}
+  let query = {}
 
-  // if (type) {
-  //   query.type = type
-  // }
+  if (type) {
+    query.type = type
+  }
 
   let postsNumber = await postModal.countDocuments()
 
   const posts = await postModal
-    .find({ type: req.query.type })
-
+    .find(query)
     .skip(startIndex)
     .limit(limit)
     .sort({ [sortedBy]: order })
-  // search shirt by title
+  // search post by title
   if (req.query.search) {
     const posts = await postModal
       .find({
@@ -40,7 +39,6 @@ exports.getposts = tryCatchHandler(async (req, res, next) => {
       posts,
     })
   }
-  
 
   if (!posts) {
     return res
@@ -55,9 +53,11 @@ exports.getposts = tryCatchHandler(async (req, res, next) => {
 
 // get a single post
 exports.getPost = tryCatchHandler(async (req, res, next) => {
-  let post = await postModal.findById(req.params.id)
+  let post = await postModal.findOne({ _id: req.params.id })
   if (!post) {
-    res.status(404).send("aucun post trouver avec cet identificateur")
+    res
+      .status(404)
+      .send("aucun post trouver avec cet identificateur" + req.query.id)
   }
   return res.status(200).send(post)
 })

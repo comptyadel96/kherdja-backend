@@ -155,9 +155,11 @@ exports.login = tryCatchHandler(async (req, res, next) => {
 exports.logout = tryCatchHandler(async (req, res, next) => {
   res.clearCookie("connect.sid")
   req.logOut(() => {
-    req.session.destroy(function (err) {
-      // destroys the session
-      res.send()
-    })
+    // req.session.destroy(function (err) {
+    //   // destroys the session
+    //   res.send("cookie destroyd with success")
+    // })
+    req.session = null
   })
+  res.redirect("http://localhost:5173/login")
 })

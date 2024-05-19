@@ -5,8 +5,8 @@ const postSchema = new mongoose.Schema(
     photo: String,
     dateDebut: {
       type: String,
-      maxLenght: [8, "la date de début ne doit pas dépasser 8 caractéres"],
-      minlength: [8, "la date de début doit comporter au moins 8 caractéres"],
+      // maxLenght: [8, "la date de début ne doit pas dépasser 8 caractéres"],
+      // minlength: [8, "la date de début doit comporter au moins 8 caractéres"],
     },
     heureDebut: String,
     lieu: String,
@@ -42,6 +42,8 @@ const postSchema = new mongoose.Schema(
     titre: String,
     paragraphe: String,
     organisateur: String,
+    images: [String],
+    videos: [String],
   },
   { timestamps: true }
 )

@@ -103,8 +103,7 @@ exports.getUser = tryCatchHandler(async (req, res, next) => {
 
 // Register new user
 exports.register = tryCatchHandler(async (req, res, next) => {
-  const { nom, prenom, email, hasCompletedProfile, authProvider, password } =
-    req.body
+  const { nom, prenom, email, authProvider, password } = req.body
   bcrypt.hash(password, saltRounds, async (err, hashedPassword) => {
     if (err) {
       console.error("Erreur lors du hashage du mot de passe :", err)
@@ -114,19 +113,18 @@ exports.register = tryCatchHandler(async (req, res, next) => {
       nom,
       prenom,
       email,
-      hasCompletedProfile,
       authProvider,
       password: hashedPassword,
     })
     // Remplir userId avec _id lors de la création
     newUser.userId = newUser._id.toString()
-    await newUser.save().then(() => {
-      req.logIn(newUser, (err) => {
+    await newUser.save().then(async () => {
+      await req.logIn(newUser, (err) => {
         if (err) {
           throw err
         }
+        res.status(200).send(newUser)
       })
-      res.status(200).send(newUser)
     })
   })
 })

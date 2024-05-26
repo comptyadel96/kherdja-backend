@@ -20,7 +20,7 @@ app.use(
 
     // proxy: true,
     cookie: {
-      secure: false, // remmetre ça en true en production
+      secure: true, // remmetre ça en true en production
       maxAge: 30 * 24 * 60 * 60 * 1000,
       // sameSite: "none",
       httpOnly: true,
@@ -33,7 +33,7 @@ app.use(passport.session()) // use the cookie to store the session
 
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: ["http://localhost:5173,https://kherdja.com"],
     credentials: true,
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   })
@@ -50,7 +50,6 @@ app.use(function (req, res, next) {
 
   // Request headers you wish to allow
   res.setHeader("Access-Control-Allow-Headers", "X-Requested-With,content-type")
-  
 
   // Set to true if you need the website to include cookies in the requests sent
   // to the API (e.g. in case you use sessions)

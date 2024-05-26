@@ -16,13 +16,10 @@ const userSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      minLength: [10, "le nom doit doit contenir au-moins 4 lettres"],
-      maxLength: [200, "l'email ne doit pas dépasser 200 lettres/chiffres"],
-      unique: [
-        true,
-        "cette email a déja été utiliser veuillez choisir un autre",
-      ],
-      
+      minLength: [10, "l'email doit doit contenir au-moins 10 lettres"],
+      maxLength: [200, "l'email ne doit pas dépasser 200 lettres"],
+      unique: true,
+      required: [true],
     },
     password: String,
     likedPosts: [

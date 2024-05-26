@@ -49,6 +49,8 @@ app.use(function (req, res, next) {
     "http://localhost:5173",
     "https://kherdja.netlify.app",
     "https://kherdja-backend.onrender.com",
+    "https://kherdja-backend.onrender.com/api/users/login",
+    "https://kherdja-backend.onrender.com/api/isAuthenticated",
   ])
 
   // Request methods you wish to allow

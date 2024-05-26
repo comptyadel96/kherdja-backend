@@ -11,7 +11,7 @@ const passport = require("passport")
 env.config({ path: "./config/.env" })
 
 connectdb()
-
+app.set("trust proxy", 1)
 app.use(
   session({
     secret: process.env.COOKIE_KEY,

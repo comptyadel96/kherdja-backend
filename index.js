@@ -45,12 +45,11 @@ app.use(
 )
 app.use(function (req, res, next) {
   // Website you wish to allow to connect
-  res.setHeader(
-    "Access-Control-Allow-Origin",
+  res.setHeader("Access-Control-Allow-Origin", [
     "http://localhost:5173",
     "https://kherdja.netlify.app",
-    "https://kherdja-backend.onrender.com"
-  )
+    "https://kherdja-backend.onrender.com",
+  ])
 
   // Request methods you wish to allow
   res.setHeader(

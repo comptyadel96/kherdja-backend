@@ -33,14 +33,21 @@ app.use(passport.session()) // use the cookie to store the session
 
 app.use(
   cors({
-    origin: ["http://localhost:5173,https://kherdja.com"],
+    origin: [
+      "http://localhost:5173,https://kherdja.com",
+      "https://kherdja.netlify.app",
+    ],
     credentials: true,
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   })
 )
 app.use(function (req, res, next) {
   // Website you wish to allow to connect
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173")
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "http://localhost:5173",
+    "https://kherdja.netlify.app"
+  )
 
   // Request methods you wish to allow
   res.setHeader(

@@ -15,10 +15,10 @@ app.set("trust proxy", 1)
 app.use(
   session({
     secret: process.env.COOKIE_KEY,
-    resave: false,
+    resave: true,
     saveUninitialized: false,
 
-    // proxy: true,
+    proxy: true,
     cookie: {
       secure: true, // remmetre ça en true en production
       maxAge: 30 * 24 * 60 * 60 * 1000,

@@ -159,5 +159,5 @@ exports.logout = tryCatchHandler(async (req, res, next) => {
     // })
     req.session = null
   })
-  res.redirect("http://localhost:5173/login")
+  res.redirect("https://kherdja.netlify.app/login")
 })

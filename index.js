@@ -22,7 +22,7 @@ app.use(
     cookie: {
       secure: true, // remmetre ça en true en production
       maxAge: 30 * 24 * 60 * 60 * 1000,
-      // sameSite: "none",
+      sameSite: "none",
       httpOnly: true,
     },
   })

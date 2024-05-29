@@ -92,7 +92,7 @@ app.use(
     saveUninitialized: false,
     proxy: true,
     cookie: {
-      secure: true, // remmetre ça en true en production
+      secure: false, // remmetre ça en true en production
       maxAge: 30 * 24 * 60 * 60 * 1000,
       sameSite: "none",
       httpOnly: true,

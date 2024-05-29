@@ -1,104 +1,8 @@
-// // const router = require("express").Router()
-// // const multer = require("multer")
-// // const path = require("path")
-// // const fs = require("fs")
-// // const {
-// //   getposts,
-// //   getPost,
-// //   createPost,
-// //   editPost,
-// //   deletePost,
-// // } = require("../controllers/posts")
-// // const sharp = require("sharp")
-
-// // const storage = multer.diskStorage({
-// //   destination: function (req, file, cb) {
-// //     cb(null, "public/uploads/")
-// //   },
-// //   filename: function (req, file, cb) {
-// //     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9)
-// //     const ext = path.extname(file.originalname)
-// //     console.log("Extension du fichier:", ext)
-
-// //     cb(null, uniqueSuffix + ext)
-// //   },
-// // })
-// // const upload = multer({
-// //   limits: {
-// //     fileSize: 55000000, // 55mb
-// //   },
-// //   fileFilter(req, file, cb) {
-// //     if (!file.originalname.match(/\.(jpg|jpeg|png|mp4)$/gi)) {
-// //       return cb(
-// //         new Error(
-// //           "le type de fichier doit étre une image ou une vidéo de taille inférieure ou égale a 55MBs"
-// //         )
-// //       )
-// //     }
-// //     cb(undefined, true)
-// //   },
-// //   storage: storage,
-// // }).fields([
-// //   { name: "photo", maxCount: 1 },
-// //   { name: "video", maxCount: 1 },
-// // ])
-
-// // // upload multiple images for the post
-
-// // const uploads = multer({
-// //   limits: {
-// //     fileSize: 55000000, // 55mb
-// //   },
-// //   fileFilter(req, file, cb) {
-// //     if (!file.originalname.match(/\.(jpg|jpeg|png|mp4)$/gi)) {
-// //       return cb(
-// //         new Error(
-// //           "le type de fichier doit étre une image ou une vidéo de taille inférieure ou égale a 55MBs"
-// //         )
-// //       )
-// //     }
-// //     cb(undefined, true)
-// //   },
-// //   storage: storage,
-// // }).array("images")
-
-// // // Middleware pour redimensionner l'image avec Sharp
-// // const resizeImage = async (req, res, next) => {
-
-// //   if (!req.file) {
-// //     return next() // Si pas de fichier, passez au middleware suivant
-// //   }
-// //   try {
-// //     const { path: imagePath } = req.file
-// //     const resizedImagePath = imagePath.replace(/\.(jpg|jpeg|png)$/gi, ".webp")
-// //     await sharp(imagePath)
-// //       .resize({ fit: "inside", width: 850, height: 500 })
-// //       .toFormat("webp")
-// //       .toFile(resizedImagePath)
-// //     fs.unlinkSync(imagePath)
-// //     req.file.path = resizedImagePath // Mettez à jour le chemin du fichier avec le chemin redimensionné
-// //     next()
-// //   } catch (error) {
-// //     return next(error) // En cas d'erreur, passez à l'erreur suivante
-// //   }
-// // }
-
-// // router.route("/").get(getposts).post(upload, uploads, resizeImage, createPost)
-
-// // router
-// //   .route("/:id")
-// //   .get(getPost)
-// //   .put(upload, resizeImage, editPost)
-// //   .delete(deletePost)
-
-// // module.exports = router
-
 // const express = require("express")
 // const router = express.Router()
 // const multer = require("multer")
-// const path = require("path")
-// const fs = require("fs")
-// const sharp = require("sharp")
+// const cloudinary = require("cloudinary").v2
+
 
 // const {
 //   getposts,
@@ -108,15 +12,11 @@
 //   deletePost,
 // } = require("../controllers/posts")
 
-// const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     cb(null, "public/uploads/")
-//   },
-//   filename: function (req, file, cb) {
-//     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9)
-//     const ext = path.extname(file.originalname)
-//     cb(null, uniqueSuffix + ext)
-//   },
+// // Configuration de Cloudinary
+// cloudinary.config({
+//   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+//   api_key: process.env.CLOUDINARY_API_KEY,
+//   api_secret: process.env.CLOUDINARY_API_SECRET,
 // })
 
 // const upload = multer({
@@ -133,44 +33,20 @@
 //     }
 //     cb(null, true)
 //   },
-//   storage: storage,
 // })
 
-// const uploadSingle = upload.single("photo")
-// const uploadMultiple = upload.fields([
+// const uploadFields = upload.fields([
+//   { name: "photo", maxCount: 1 },
 //   { name: "images", maxCount: 10 },
-//   { name: "videos", maxCount: 2 },
+//   { name: "videos", maxCount: 8 },
 // ])
 
-// // Middleware pour redimensionner l'image avec Sharp
-// const resizeImage = async (req, res, next) => {
-//   if (!req.file) {
-//     return next() // Si pas de fichier, passez au middleware suivant
-//   }
-//   try {
-//     const { path: imagePath } = req.file
-//     const resizedImagePath = imagePath.replace(/\.(jpg|jpeg|png)$/i, ".webp")
-//     await sharp(imagePath)
-//       .resize({ fit: "inside", width: 850, height: 500 })
-//       .toFormat("webp")
-//       .toFile(resizedImagePath)
-//     fs.unlinkSync(imagePath)
-//     req.file.path = resizedImagePath // Mettez à jour le chemin du fichier avec le chemin redimensionné
-//     next()
-//   } catch (error) {
-//     return next(error) // En cas d'erreur, passez à l'erreur suivante
-//   }
-// }
-
-// router
-//   .route("/")
-//   .get(getposts)
-//   .post(uploadSingle, uploadMultiple, resizeImage, createPost)
+// router.route("/").get(getposts).post(uploadFields, createPost)
 
 // router
 //   .route("/:id")
 //   .get(getPost)
-//   .put(uploadSingle, resizeImage, editPost)
+//   .put(uploadFields, editPost)
 //   .delete(deletePost)
 
 // module.exports = router
@@ -178,9 +54,9 @@
 const express = require("express")
 const router = express.Router()
 const multer = require("multer")
+const cloudinary = require("cloudinary").v2
 const path = require("path")
 const fs = require("fs")
-const sharp = require("sharp")
 
 const {
   getposts,
@@ -190,10 +66,18 @@ const {
   deletePost,
 } = require("../controllers/posts")
 
-const storage = multer({
-  // destination: function (req, file, cb) {
-  //   cb(null, "public/uploads/")
-  // },
+// Configuration de Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+})
+
+// Configuration du stockage local pour multer
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "public/uploads/")
+  },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9)
     const ext = path.extname(file.originalname)
@@ -202,6 +86,7 @@ const storage = multer({
 })
 
 const upload = multer({
+  storage: storage,
   limits: {
     fileSize: 55000000, // 55mb
   },
@@ -215,8 +100,6 @@ const upload = multer({
     }
     cb(null, true)
   },
-
-  storage: storage,
 })
 
 const uploadFields = upload.fields([
@@ -225,38 +108,52 @@ const uploadFields = upload.fields([
   { name: "videos", maxCount: 8 },
 ])
 
-// Middleware pour redimensionner les images avec Sharp
-const resizeImages = async (req, res, next) => {
-  if (!req.files || !req.files.images) {
-    return next() // Si pas de fichier, passez au middleware suivant
-  }
+// Middleware pour uploader les fichiers vers Cloudinary et récupérer leurs URLs
+const handleUploads = async (req, res, next) => {
   try {
-    await Promise.all(
-      req.files.images.map(async (file) => {
-        const resizedImagePath = file.path.replace(
-          /\.(jpg|jpeg|png)$/i,
-          ".webp"
-        )
-        await sharp(file.path)
-          .resize({ fit: "inside", width: 850, height: 500 })
-          .toFormat("webp")
-          .toFile(resizedImagePath)
-        fs.unlinkSync(file.path)
-        file.path = resizedImagePath // Mettez à jour le chemin du fichier avec le chemin redimensionné
+    const uploadToCloudinary = async (filePath, resourceType) => {
+      console.log(`Uploading file: ${filePath}`)
+      const result = await cloudinary.uploader.upload(filePath, {
+        resource_type: resourceType,
+        folder: "uploads",
       })
-    )
+      console.log(`Uploaded file: ${result.secure_url}`)
+      fs.unlinkSync(filePath) // Supprimez le fichier local après l'upload
+      return result.secure_url
+    }
+
+    if (req.files.photo) {
+      req.body.photo = await uploadToCloudinary(req.files.photo[0].path, "image")
+    }
+    if (req.files.images) {
+      req.body.images = await Promise.all(
+        req.files.images.map(async (file) => {
+          return await uploadToCloudinary(file.path, "image")
+        })
+      )
+    }
+    if (req.files.videos) {
+      req.body.videos = await Promise.all(
+        req.files.videos.map(async (file) => {
+          return await uploadToCloudinary(file.path, "video")
+        })
+      )
+    }
     next()
   } catch (error) {
-    return next(error) // En cas d'erreur, passez à l'erreur suivante
+    console.error("Error in handleUploads:", error)
+    return next(error)
   }
 }
 
-router.route("/").get(getposts).post(uploadFields, resizeImages, createPost)
+
+
+router.route("/").get(getposts).post(uploadFields, handleUploads, createPost)
 
 router
   .route("/:id")
   .get(getPost)
-  .put(uploadFields, resizeImages, editPost)
+  .put(uploadFields, handleUploads, editPost)
   .delete(deletePost)
 
 module.exports = router

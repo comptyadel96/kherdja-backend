@@ -1,10 +1,10 @@
-const { postModal } = require("../models/post")
+
 const tryCatchHandler = require("../middleware/tryCatchHandler")
+const { postModal } = require("../models/post")
 const cloudinary = require("cloudinary").v2
 
-// // get all posts
+// get all posts
 exports.getposts = tryCatchHandler(async (req, res, next) => {
-  // pagination filtering and sorting
   var sortedBy = req.query.sortBy || "createdAt"
   var order = parseInt(req.query.order) || -1
   const page = parseInt(req.query.page) || 1
@@ -62,9 +62,57 @@ exports.getPost = tryCatchHandler(async (req, res, next) => {
   return res.status(200).send(post)
 })
 
+// create a new post
+exports.createPost = tryCatchHandler(async (req, res, next) => {
+  const {
+    titre,
+    dateDebut,
+    paragraphe,
+    heureDebut,
+    type,
+    lieu,
+    prix,
+    organisateur,
+  } = req.body
+
+  const post = await postModal.create({
+    titre,
+    dateDebut,
+    paragraphe,
+    heureDebut,
+    type,
+    lieu,
+    prix,
+    photo: req.body.photo,
+    images: req.body.images,
+    videos: req.body.videos,
+    organisateur,
+  })
+
+  // const result = await cloudinary.uploader.upload(req.file.path, {
+  //   folder: "kherdja",
+  // })
+  // console.log(result.url)
+  console.log(req.file)
+
+  return res.status(200).json({ message: "Post créé avec succès", post })
+})
+
 // edit post
 exports.editPost = tryCatchHandler(async (req, res, next) => {
-  let post = await postModal.findByIdAndUpdate(req.params.id, req.body, {
+  const updateData = req.body
+
+  if (req.body.photo) {
+    updateData.photo = req.body.photo
+  }
+  if (req.body.images) {
+    updateData.images = req.body.images
+  }
+  if (req.body.videos) {
+    updateData.videos = req.body.videos
+  }
+
+  let post = await postModal.findByIdAndUpdate(req.params.id, updateData, {
     runValidators: true,
     new: true,
   })
@@ -80,63 +128,5 @@ exports.deletePost = tryCatchHandler(async (req, res, next) => {
   if (!post) {
     res.status(404).send("aucun post trouver avec cet identificateur")
   }
-  return res.status(200).send("post supprimer avec succées")
-})
-
-exports.createPost = tryCatchHandler(async (req, res, next) => {
-  const {
-    titre,
-    dateDebut,
-    paragraphe,
-    heureDebut,
-    type,
-    lieu,
-    prix,
-    organisateur,
-  } = req.body
-
-  let photo = null
-  let images = []
-  let videos = []
-
-  if (req.files.photo) {
-    // Télécharger la photo sur Cloudinary
-    const result = await cloudinary.uploader.upload(req.files.photo[0].path)
-    photo = result.secure_url // Récupérer l'URL sécurisée de l'image
-  }
-  if (req.files.images) {
-    // Télécharger les images sur Cloudinary
-    images = await Promise.all(
-      req.files.images.map(async (file) => {
-        const result = await cloudinary.uploader.upload(file.path)
-        return result.secure_url // Récupérer l'URL sécurisée de l'image
-      })
-    )
-  }
-  if (req.files.videos) {
-    // Télécharger les vidéos sur Cloudinary
-    videos = await Promise.all(
-      req.files.videos.map(async (file) => {
-        const result = await cloudinary.uploader.upload(file.path, {
-          resource_type: "video",
-        })
-        return result.secure_url // Récupérer l'URL sécurisée de la vidéo
-      })
-    )
-  }
-  const post = await postModal.create({
-    titre,
-    dateDebut,
-    paragraphe,
-    heureDebut,
-    type,
-    lieu,
-    prix,
-    photo,
-    images,
-    videos,
-    organisateur,
-  })
-
-  return res.status(200).json({ message: "Post créé avec succès", post })
+  return res.status(200).send("post supprimer avec succès")
 })

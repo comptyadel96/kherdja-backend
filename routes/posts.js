@@ -73,13 +73,13 @@ const handleUploads = async (req, res, next) => {
 
     if (req.files.photo) {
       req.body.photo = await uploadToCloudinary(req.files.photo[0].path, "image")
-      fs.unlinkSync(req.files.photo[0].path) // Supprimez le fichier local
+    //   fs.unlinkSync(req.files.photo[0].path) // Supprimez le fichier local
     }
     if (req.files.images) {
       req.body.images = await Promise.all(
         req.files.images.map(async (file) => {
           const imageUrl = await uploadToCloudinary(file.path, "image")
-          fs.unlinkSync(file.path) // Supprimez le fichier local
+        //   fs.unlinkSync(file.path) // Supprimez le fichier local
           return imageUrl
         })
       )

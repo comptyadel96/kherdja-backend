@@ -128,5 +128,9 @@ exports.deletePost = tryCatchHandler(async (req, res, next) => {
   if (!post) {
     res.status(404).send("aucun post trouver avec cet identificateur")
   }
+   if (post.photo) {
+     const publicId = post.photo.split("/").pop().split(".")[0] // Extraire le public ID de l'URL de la photo
+     await cloudinary.uploader.destroy(publicId) // Supprimer l'image sur Cloudinary
+   }
   return res.status(200).send("post supprimer avec succès")
 })

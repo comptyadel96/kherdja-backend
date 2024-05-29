@@ -64,7 +64,7 @@
 
 // // // Middleware pour redimensionner l'image avec Sharp
 // // const resizeImage = async (req, res, next) => {
-  
+
 // //   if (!req.file) {
 // //     return next() // Si pas de fichier, passez au middleware suivant
 // //   }
@@ -92,7 +92,6 @@
 // //   .delete(deletePost)
 
 // // module.exports = router
-
 
 // const express = require("express")
 // const router = express.Router()
@@ -176,10 +175,6 @@
 
 // module.exports = router
 
-
-
-
-
 const express = require("express")
 const router = express.Router()
 const multer = require("multer")
@@ -195,13 +190,10 @@ const {
   deletePost,
 } = require("../controllers/posts")
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    // cb(null, "/var/data/public/uploads/")
-    // cb(null, "public/uploads/")
-    cb(null, "/var/data/uploads/")
-    // cb(null, path.join(__dirname, "..", "public", "uploads"))
-  },
+const storage = multer({
+  // destination: function (req, file, cb) {
+  //   cb(null, "public/uploads/")
+  // },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9)
     const ext = path.extname(file.originalname)
@@ -223,6 +215,7 @@ const upload = multer({
     }
     cb(null, true)
   },
+
   storage: storage,
 })
 

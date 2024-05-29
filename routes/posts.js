@@ -226,7 +226,7 @@ const upload = multer({
 const uploadFields = upload.fields([
   { name: "photo", maxCount: 1 },
   { name: "images", maxCount: 10 },
-  { name: "videos", maxCount: 2 },
+  { name: "videos", maxCount: 8 },
 ])
 
 // Middleware pour redimensionner les images avec Sharp

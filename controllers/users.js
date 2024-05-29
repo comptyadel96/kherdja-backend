@@ -104,6 +104,11 @@ exports.getUser = tryCatchHandler(async (req, res, next) => {
 // Register new user
 exports.register = tryCatchHandler(async (req, res, next) => {
   const { nom, prenom, email, authProvider, password } = req.body
+  // vérifier si l'utilisateur n'est pas déja inscri ou bien l'email n'a pas été déja utiliser
+  const userExists = await userModel.findOne({ email })
+  if (userExists) {
+    return res.status(403).send("cette email a déja été utiliser")
+  }
   bcrypt.hash(password, saltRounds, async (err, hashedPassword) => {
     if (err) {
       console.error("Erreur lors du hashage du mot de passe :", err)

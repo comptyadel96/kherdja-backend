@@ -54,7 +54,7 @@ exports.getposts = tryCatchHandler(async (req, res, next) => {
 exports.getPost = tryCatchHandler(async (req, res, next) => {
   let post = await postModal.findOne({ _id: req.params.id })
   if (!post) {
-    res
+    return res
       .status(404)
       .send("aucun post trouver avec cet identificateur" + req.query.id)
   }

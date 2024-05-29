@@ -54,7 +54,11 @@ app.use(
 
 // serve static images
 // app.use(express.static("/var/data/public"))
-app.use(express.static(path.join(__dirname, "public")))
+// app.use(express.static(path.join(__dirname, "public")))
+
+// Serve static images
+app.use('/uploads', express.static('/var/data/uploads'));
+
 app.use(express.json({ limit: "15mb" }))
 
 app.use("/api/isAuthenticated", async (req, res) => {

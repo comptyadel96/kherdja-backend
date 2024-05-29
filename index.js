@@ -7,6 +7,15 @@ const users = require("./routes/users")
 const connectdb = require("./utils/connectdb")
 const session = require("express-session")
 const passport = require("passport")
+const fs = require("fs")
+
+
+const uploadDir = "/var/data/public/uploads"
+
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true })
+}
+
 
 env.config({ path: "./config/.env" })
 

@@ -88,7 +88,7 @@ const handleUploads = async (req, res, next) => {
       req.body.videos = await Promise.all(
         req.files.videos.map(async (file) => {
           const videoUrl = await uploadToCloudinary(file.path, "video")
-          fs.unlinkSync(file.path) // Supprimez le fichier local
+        //   fs.unlinkSync(file.path) // Supprimez le fichier local
           return videoUrl
         })
       )

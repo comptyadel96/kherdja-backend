@@ -66,9 +66,9 @@ const handleUploads = async (req, res, next) => {
         resource_type: resourceType,
         folder: "uploads",
       })
-      console.log(`Uploaded file: ${result.secure_url}`)
+      console.log(`Uploaded file: ${result.url}`)
       fs.unlinkSync(filePath) // Supprimez le fichier local après l'upload
-      return result.secure_url
+      return result.url
     }
 
     if (req.files.photo) {

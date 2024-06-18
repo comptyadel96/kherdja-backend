@@ -12,6 +12,7 @@ const {
   editPost,
   deletePost,
 } = require("../controllers/posts")
+const { isAuthenticatedAndAdmin } = require("../middleware/isAdmin")
 
 // Configuration de Cloudinary
 cloudinary.config({
@@ -72,14 +73,17 @@ const handleUploads = async (req, res, next) => {
     }
 
     if (req.files.photo) {
-      req.body.photo = await uploadToCloudinary(req.files.photo[0].path, "image")
-    //   fs.unlinkSync(req.files.photo[0].path) // Supprimez le fichier local
+      req.body.photo = await uploadToCloudinary(
+        req.files.photo[0].path,
+        "image"
+      )
+      //   fs.unlinkSync(req.files.photo[0].path) // Supprimez le fichier local
     }
     if (req.files.images) {
       req.body.images = await Promise.all(
         req.files.images.map(async (file) => {
           const imageUrl = await uploadToCloudinary(file.path, "image")
-        //   fs.unlinkSync(file.path) // Supprimez le fichier local
+          //   fs.unlinkSync(file.path) // Supprimez le fichier local
           return imageUrl
         })
       )
@@ -88,7 +92,7 @@ const handleUploads = async (req, res, next) => {
       req.body.videos = await Promise.all(
         req.files.videos.map(async (file) => {
           const videoUrl = await uploadToCloudinary(file.path, "video")
-        //   fs.unlinkSync(file.path) // Supprimez le fichier local
+          //   fs.unlinkSync(file.path) // Supprimez le fichier local
           return videoUrl
         })
       )
@@ -100,12 +104,15 @@ const handleUploads = async (req, res, next) => {
   }
 }
 
-router.route("/").get(getposts).post(uploadFields, handleUploads, createPost)
+router
+  .route("/")
+  .get(getposts)
+  .post(uploadFields, handleUploads, isAuthenticatedAndAdmin, createPost)
 
 router
   .route("/:id")
   .get(getPost)
   .put(uploadFields, handleUploads, editPost)
-  .delete(deletePost)
+  .delete(deletePost, isAuthenticatedAndAdmin)
 
 module.exports = router

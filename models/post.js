@@ -8,6 +8,10 @@ const postSchema = new mongoose.Schema(
       // maxLenght: [8, "la date de début ne doit pas dépasser 8 caractéres"],
       // minlength: [8, "la date de début doit comporter au moins 8 caractéres"],
     },
+    aLaUne: {
+      type: Boolean,
+      default: false,
+    },
     heureDebut: String,
     lieu: String,
     prix: String,

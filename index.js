@@ -38,6 +38,8 @@ app.use(
     origin: [
       "http://localhost:5173",
       "https://kherdja.com",
+      "http://kherdja.com",
+      "www.kherdja.com",
       "https://kherdja.netlify.app",
       "https://kherdja-backend.onrender.com",
     ],

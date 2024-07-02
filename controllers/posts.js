@@ -50,6 +50,11 @@ exports.getposts = tryCatchHandler(async (req, res, next) => {
   })
 })
 
+exports.getaLaUne = tryCatchHandler(async (req, res, next) => {
+  const posts = await postModal.find({ aLaUne: true }).limit(10)
+  return res.status(200).send(posts)
+})
+
 // get a single post
 exports.getPost = tryCatchHandler(async (req, res, next) => {
   let post = await postModal.findOne({ _id: req.params.id })

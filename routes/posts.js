@@ -11,6 +11,7 @@ const {
   createPost,
   editPost,
   deletePost,
+  getaLaUne,
 } = require("../controllers/posts")
 const { isAuthenticatedAndAdmin } = require("../middleware/isAdmin")
 
@@ -109,6 +110,9 @@ router
   .get(getposts)
   .post(uploadFields, handleUploads, isAuthenticatedAndAdmin, createPost)
 
+// special route to get a la une event
+router.route("/aLaUne").get(getaLaUne)
+// routes for single post
 router
   .route("/:id")
   .get(getPost)

@@ -10,6 +10,7 @@ const session = require("express-session")
 const passport = require("passport")
 const cron = require("node-cron")
 const postModel = require("./models/post") // Importez le modèle de post
+const { isAuthenticatedAndAdmin } = require("./middleware/isAdmin")
 
 env.config({ path: "./config/.env" })
 
@@ -68,6 +69,11 @@ app.use("/api/isAuthenticated", async (req, res) => {
 // mount the routes
 app.use("/api/posts", posts)
 app.use("/api/users", users)
+app.use("/api/deletePhoto", isAuthenticatedAndAdmin, async (req, res) => {
+  const publicId = req.body.photo.split("/").pop().split(".")[0]
+  await cloudinary.uploader.destroy(publicId)
+  res.status(200).send("photo deleted with success")
+})
 
 const PORT = process.env.PORT || 3000
 

@@ -12,6 +12,7 @@ const {
   editPost,
   deletePost,
   getaLaUne,
+  deletePhoto,
 } = require("../controllers/posts")
 const { isAuthenticatedAndAdmin } = require("../middleware/isAdmin")
 
@@ -109,6 +110,9 @@ router
   .route("/")
   .get(getposts)
   .post(uploadFields, handleUploads, isAuthenticatedAndAdmin, createPost)
+
+// delete photo
+router.route("/deletePhoto").post(deletePhoto)
 
 // special route to get a la une event
 router.route("/aLaUne").get(getaLaUne)

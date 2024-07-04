@@ -2,6 +2,12 @@ const tryCatchHandler = require("../middleware/tryCatchHandler")
 const { postModal } = require("../models/post")
 const cloudinary = require("cloudinary").v2
 
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+})
+
 // get all posts
 exports.getposts = tryCatchHandler(async (req, res, next) => {
   var sortedBy = req.query.sortBy || "createdAt"
@@ -160,4 +166,28 @@ exports.deletePost = tryCatchHandler(async (req, res, next) => {
   })
 
   return res.status(200).send("Post supprimé avec succès")
+})
+
+exports.deletePhoto = tryCatchHandler(async (req, res, next) => {
+  const { photo, postId } = req.body
+  const tof = photo.split("/").pop().split(".")[0]
+  console.log(tof)
+  await cloudinary.uploader.destroy(
+    "uploads/" + tof,
+    { invalidate: true },
+    (error, result) => {
+      console.log(result, error)
+    }
+  )
+  // Mettre à jour le document dans MongoDB
+  const post = await postModal.findById(postId)
+  if (!post) {
+    return res.status(404).send("Post non trouvé")
+  }
+
+  // Filtrer les images pour supprimer l'URL correspondante
+  post.images = post.images.filter((imgUrl) => imgUrl !== photo)
+  await post.save()
+
+  return res.status(200).send("photo supprimer avec succées")
 })
